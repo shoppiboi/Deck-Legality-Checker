@@ -1,5 +1,5 @@
 # MTG Deck Legality Checker for Cockatrice decks
-This program was made specifically for decks generated in [Cockatrice](https://cockatrice.github.io/). 
+This program was made specifically for decks generated in [Cockatrice](https://cockatrice.github.io/) due to a friend being in need of a program like this.
 
 Libraries Used:
 - [tkinter](https://docs.python.org/3/library/tkinter.html)
