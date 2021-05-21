@@ -8,7 +8,7 @@ import tkinter
 #   respective card.
 # 
 #   Hence, they've been given an exception where instead of reaching
-#   into the API, they will instantly return Legal, as these cards are
+#   into the library, they will instantly return Legal, as these cards are
 #   ~traditionally~ always Legal. 
 basic_mana_cards = [
     "Forest", 
