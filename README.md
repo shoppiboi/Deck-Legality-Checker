@@ -1,4 +1,4 @@
-# Deck Legality Checker
+# Legatrice
 This program was made specifically for decks generated in [Cockatrice](https://cockatrice.github.io/).
 
 Libraries Used:
