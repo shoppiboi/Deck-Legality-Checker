@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import check_legality as cl
-
+import threading
 class AppWindow:
     def __init__(self, master):
         self.master = master
@@ -74,11 +74,13 @@ class AppWindow:
         self.file = filedialog.askopenfilename()
 
         if self.file != "":  #   assuming the user has provided a file
-            self.get_format_legality_pairs()
+            thread = threading.Thread(target=self.get_format_legality_pairs)
+            thread.start()
 
     #   uses the check_legality and mtgsdk library to-
     #   retrieve information regarding the cards
     def get_format_legality_pairs(self):
+        self.write_output({'Loading': 'Loading'})
         output = cl.main(self.file, self.dropdown.get(), self.ignore_side.get())
         self.write_output(output)
 
