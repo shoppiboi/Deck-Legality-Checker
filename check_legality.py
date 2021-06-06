@@ -1,6 +1,7 @@
 from mtgsdk import Card
 import re
 import tkinter
+import threading
 
 #   due to the number of print editions these five cards have;
 #   the performance of the program is significantly hindered,
@@ -38,34 +39,63 @@ def extract_card_names(cockatrice_file, ignore_side=False):
 
     return card_names
 
-def retrieve_legalities(card_name, format_name="Standard"):
 
-    #   if the card is one of the basic mana cards, return Legal
-    #   explanation for this has been provided at Lines 5-12
-    if card_name in basic_mana_cards:
-        return "Legal"
+def retrieve_legalities(card_names, format_name="Standard"):
 
-    #   get the first instance of the card (this is due to 
-    #   the library returning all the print editions of the card)
-    #   as the legality remains constant regardless of print edition
-    card = Card.where(name=card_name).all()[0]
-    
-    legalities = card.legalities    #   obtain the legalities property from the Card object
+    pairings = {}
 
-    for format_info in legalities:
-        if format_info["format"] == format_name:
-            return format_info["legality"]
-    
-    return "Not Legal"
+    for name in card_names:
+
+        #   if the card is one of the basic mana cards, return Legal
+        #   explanation for this has been provided at Lines 5-12
+        if name in basic_mana_cards:
+            pairings[name] = "Legal"
+
+        else:
+
+            #   get the first instance of the card (this is due to 
+            #   the library returning all the print editions of the card)
+            #   as the legality remains constant regardless of print edition
+            card = Card.where(name=name).all()[0]
+
+            pairings[name] = 'Not Legal'    #   incase the game format is not in the card's legalities
+
+            for legality in card.legalities:
+                if legality["format"] == format_name:
+                    pairings[name] = legality["legality"]
+
+    card_legality_pairs.update(pairings)
+
+card_legality_pairs = {}
+threads = []
 
 def main(file, format_choice, ignore_sideboard):
     f = open(file, 'r')
 
     card_names = extract_card_names(f, ignore_sideboard)
 
-    card_legality_pairs = {}
+    #   create batches from the large card set to improve performance and place them in threads
+    for x in range(int(len(card_names)/4)):
+        start_index = x * 5
+        end_index = start_index + 5
 
+        arguments = []
+        if (end_index > len(card_names)):
+            arguments = card_names[start_index:]
+        else:
+            arguments = card_names[start_index:end_index]
+
+        #   create a thread with the batches for optimization
+        t = threading.Thread(target=retrieve_legalities, args=(arguments, format_choice))
+        threads.append(t)   #   add the thread to the array of active threads
+        t.start()
+
+    #   wait for all threads to finish before moving on
+    for t in threads:
+        t.join()
+
+    sorted_legality_pairs = {}
     for name in card_names:
-        card_legality_pairs[name] = retrieve_legalities(name, format_choice)
+        sorted_legality_pairs[name] = card_legality_pairs[name]
 
-    return card_legality_pairs
+    return sorted_legality_pairs
