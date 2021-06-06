@@ -21,4 +21,4 @@ Supports the following game formats:
 - *Vintage*
 
 Example of the program being used:
-![gif](images/example_video.gif)
+![gif](images/example.gif)
