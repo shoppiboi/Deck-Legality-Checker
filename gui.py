@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog
 import check_legality as cl
 import threading
+
 class AppWindow:
     def __init__(self, master):
         self.master = master
