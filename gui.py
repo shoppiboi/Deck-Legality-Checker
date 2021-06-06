@@ -9,7 +9,7 @@ class AppWindow:
         self.master = master
 
         #   basic window settings
-        self.master.title("Deck Legality Checker")
+        self.master.title("Legatrice")
         self.master.resizable(False, False)
         self.master.geometry("500x450")
 
